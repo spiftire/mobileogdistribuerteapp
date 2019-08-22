@@ -53,6 +53,17 @@ section h1 {
     justify-self: center
 }
 
+.addNewSalesItem {
+    font-family: 'Courier New', Courier, monospace;
+    padding: 0;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    position: absolute;
+    bottom: 3rem;
+    right: 3rem;
+}
+
 form {
     display: grid;
     margin: 0 auto;
@@ -66,4 +77,8 @@ form {
 
 label {
     text-align: left;
+}
+
+.no-grid {
+    display: initial;
 }

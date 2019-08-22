@@ -50,7 +50,7 @@ class UI {
             <form>
                 <label for="userID">User id:
                 </label>
-                <input type="text" id="userID" placeholder="user name">
+                <input type="text" id="userID" placeholder="username">
                 <label for="userpassword">Password:
                 </label>
                 <input type="password" id="userpassword" placeholder="password">
@@ -108,6 +108,10 @@ class UI {
 
     static showAllSaleItems() {
         const salesItems = SalesItemsRegistry.getAllSalesItems();
+        if (salesItems === null) {
+            UI.container.innerHTML = '';
+            return
+        }
         salesItems.forEach((salesItem) => {
             UI.container.innerHTML = `<div>
                 <h2> ${salesItem.title} </h2>
@@ -115,6 +119,29 @@ class UI {
                 <p> ${salesItem.description} </p>
             </div>`;
         })
+    }
+
+    static showAddNewSalesItemButton() {
+        const addNewSalesItemButton = document.createElement('button');
+        addNewSalesItemButton.classList.add('addNewSalesItem', 'button');
+        addNewSalesItemButton.innerText = '+';
+        console.log(addNewSalesItemButton);
+
+        UI.container.appendChild(addNewSalesItemButton);
+
+        // Adding click eventlistner
+        addNewSalesItemButton.addEventListener('click', UI.showAddNewItemForm);
+    }
+
+    static showStore() {
+        UI.showAllSaleItems();
+        UI.showAddNewSalesItemButton();
+    }
+
+    static showAddNewItemForm() {
+        UI.container.innerHTML = `
+        
+        `;
     }
 }
 
@@ -137,7 +164,7 @@ class Auth {
 
             Store.addLoggedInUser(user);
             UI.showUsernameAtTop(user);
-            UI.showSaleItems();
+            UI.showStore();
         };
     }
 
@@ -253,4 +280,5 @@ if (!Auth.isLoggedIn()) {
     UI.showLoginForm();
 } else {
     UI.showUsernameAtTop(Store.getCurrentUser());
+    UI.showStore();
 }
