@@ -21,12 +21,28 @@ class UsersRegistry {
     }
 }
 
+// Sales Item registry: Holds and handles all the sales Items
+class SalesItemsRegistry {
+    static getAllSalesItems() {
+        return JSON.parse(localStorage.getItem('salesItems'));
+    }
+
+    static updateRegistry(salesItems) {
+        localStorage.setItem('salesItem', JSON.stringify(salesItems));
+    }
+}
+
 // UI class: Handeling UI
 class UI {
     // Grabbing the container element
     static container = document.querySelector(".container");
+    static buttonOrUser = document.querySelector("#buttonOrUser");
 
-    static showLogin() {
+    static showUsernameAtTop(user) {
+        this.buttonOrUser.innerHTML = `${user.username}`;
+    }
+
+    static showLoginForm() {
         // Creating the login form
         UI.container.innerHTML = `
         <h1>Login</h1>
@@ -89,6 +105,17 @@ class UI {
         const creatNewUserButton = document.querySelector('#creatNewUserButton');
         creatNewUserButton.addEventListener('click', Auth.createNewUser);
     }
+
+    static showAllSaleItems() {
+        const salesItems = SalesItemsRegistry.getAllSalesItems();
+        salesItems.forEach((salesItem) => {
+            UI.container.innerHTML = `<div>
+                <h2> ${salesItem.title} </h2>
+                <h3> ${salesItem.price} </h3>
+                <p> ${salesItem.description} </p>
+            </div>`;
+        })
+    }
 }
 
 // Auth class: Handeling authentication of users
@@ -98,7 +125,6 @@ class Auth {
     static logIn() {
         const userID = document.querySelector('#userID').value;
         const userPassword = document.querySelector('#userpassword').value;
-        const users = UsersRegistry.grabAllUsers();
 
         const user = {
             username: userID,
@@ -110,6 +136,8 @@ class Auth {
             console.log(Auth.checkUsernameAndPassword(user));
 
             Store.addLoggedInUser(user);
+            UI.showUsernameAtTop(user);
+            UI.showSaleItems();
         };
     }
 
@@ -186,10 +214,10 @@ class Store {
 
     static getCurrentUser() {
         let user;
-        if (localStorage.getItem('user') === null) {
+        if (localStorage.getItem('loggedInUser') === null) {
             user = null;
         } else {
-            user = JSON.parse(localStorage.getItem('user'));
+            user = JSON.parse(localStorage.getItem('loggedInUser'));
         }
         return user;
     }
@@ -222,5 +250,7 @@ class Store {
 
 // Main program
 if (!Auth.isLoggedIn()) {
-    UI.showLogin();
+    UI.showLoginForm();
+} else {
+    UI.showUsernameAtTop(Store.getCurrentUser());
 }

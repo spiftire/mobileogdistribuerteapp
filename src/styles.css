@@ -6,10 +6,11 @@
 }
 
 header {
-    padding: .25rem;
+    padding: .5rem;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
 }
 
 header h1 {
