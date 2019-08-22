@@ -1,5 +1,5 @@
 // User: Represent a user of the system
-class user {
+class User {
     constructor(firstname, lastname, streetAddress, city, postalCode, email, username, password) {
         this.firstname = firstname;
         this.lastname = lastname;
@@ -9,6 +9,15 @@ class user {
         this.email = email;
         this.username = username;
         this.password = password;
+    }
+}
+
+// UsersRegistry: A class to hold all the reigstered users
+class UsersRegistry {
+    users = [];
+
+    static grabAllUsers() {
+        return JSON.parse(localStorage.getItem('users'));
     }
 }
 
@@ -29,7 +38,7 @@ class UI {
                 <label for="userpassword">Password:
                 </label>
                 <input type="password" id="userpassword" placeholder="password">
-                <button type="submit" class="button login submit">Login</button>
+                <button type="submit" class="button submit" id="loginButton">Login</button>
             </form>
         </div>
         <a href="#" id="createNewUser">Creat new user</a> <!-- todo link to creat user page-->
@@ -40,7 +49,7 @@ class UI {
         createNewUserLink.addEventListener('click', UI.showCreateNewUser);
 
         // Event: Login
-        const loginButton = document.querySelector('.login');
+        const loginButton = document.querySelector('#loginButton');
         loginButton.addEventListener('click', Auth.logIn);
     };
 
@@ -89,21 +98,57 @@ class Auth {
     static logIn() {
         const userID = document.querySelector('#userID').value;
         const userPassword = document.querySelector('#userpassword').value;
+        const users = UsersRegistry.grabAllUsers();
+
         const user = {
-            userID: userID,
+            username: userID,
             password: userPassword
         };
 
-        Store.addLoggedInUser(user);
+
+        if (Auth.checkUsernameAndPassword(user)) {
+            console.log(Auth.checkUsernameAndPassword(user));
+
+            Store.addLoggedInUser(user);
+        };
+    }
+
+    // Check if the user exist in user registry. Returns true if user exist, and false if not.
+    static checkUsernameAndPassword(user) {
+        let match = false;
+        const users = UsersRegistry.grabAllUsers();
+        console.log(users);
+
+        users.forEach(element => {
+            console.log(element.username);
+
+            if (element.username === user.username && element.password === user.password) {
+                match = true;
+            }
+        });
+        return match;
     }
 
     // Creats a new user and adds it to the store
     static createNewUser() {
         const user = Auth.grabUserDetails();
-        UI.addNewUserToStore(user);
+        Auth.addNewUserToStore(user);
     }
 
+    // Grabbing the user details form the form and returning a user object
     static grabUserDetails() {
+        const firstname = document.querySelector('#firstname').value;
+        const lastname = document.querySelector('#lastname').value;
+        const streetaddress = document.querySelector('#streetaddress').value;
+        const postalcode = document.querySelector('#postalcode').value;
+        const city = document.querySelector('#city').value;
+        const email = document.querySelector('#email').value;
+        const username = document.querySelector('#username').value;
+        const password = document.querySelector('#password').value;
+
+        const user = new User(firstname, lastname, streetaddress, postalcode, city, email, username, password);
+        console.log(user);
+        return user;
 
     }
 
@@ -121,7 +166,7 @@ class Auth {
 
     // Adds new user to the store
     static addNewUserToStore(user) {
-        Store.addLoggedInUser(user);
+        Store.addNewUserToRegistry(user);
     }
 }
 
@@ -137,6 +182,8 @@ class SaleItem {
 
 // Store class: To handle local storage
 class Store {
+
+
     static getCurrentUser() {
         let user;
         if (localStorage.getItem('user') === null) {
@@ -147,8 +194,24 @@ class Store {
         return user;
     }
 
+    static getAllUsers() {
+        let users;
+        if (localStorage.getItem('users') === null) {
+            users = [];
+        } else {
+            users = JSON.parse(localStorage.getItem('users'));
+        }
+        return users;
+    }
+
+    static addNewUserToRegistry(user) {
+        let users = Store.getAllUsers();
+        users.push(user);
+        localStorage.setItem('users', JSON.stringify(users));
+    }
+
     static addLoggedInUser(user) {
-        localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('loggedInUser', JSON.stringify(user));
     }
 
     static removeLoggedInUser() {
