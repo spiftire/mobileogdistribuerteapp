@@ -95,6 +95,15 @@ label {
     width: 100%;
 }
 
-img#previewImage {
-    max-width: 25%;
+img.previewPicture {
+    max-width: 33%;
+
+}
+
+div.imagesHolder {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-content: space-around;
+    padding: 1rem 0;
 }

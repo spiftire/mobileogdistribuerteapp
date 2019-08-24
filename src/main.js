@@ -147,7 +147,6 @@ class UI {
             <input type="num" id="price">
             <label for="description">Description</label>
             <textarea id="description"></textarea>
-            <img src="" alt="preview picture" id="previewImage">
             <label for="picture">Images</label>
             <input type="file" id="picture" accept="image/x-png,image/gif,image/jpeg" multiple>
         </form>
@@ -301,18 +300,43 @@ class SalesPostHandler {
         return salesItemFrom;
     }
 
-    static showPreviewPicture(event) {
-        const salesItemForm = SalesPostHandler.setupVariables();
-        const imgHolder = salesItemForm.querySelector('img#previewImage');
-        const fileInput = salesItemForm.querySelector('input#picture');
-
-        const reader = new FileReader();
-        reader.onload = () => {
-            imgHolder.src = reader.result;
+    static deletePreveousPreview() {
+        const imagesHolder = document.querySelector('.imagesHolder');
+        if (imagesHolder) {
+            imagesHolder.parentElement.removeChild(imagesHolder);
         }
+    }
 
-        console.log(event);
-        reader.readAsDataURL(event.target.files[0]);
+    // Show the preview pictures in the ui
+    // todo should this be moved to UI class?
+    static showPreviewPicture(event) {
+        SalesPostHandler.deletePreveousPreview();
+        const files = event.target.files;
+        console.log(files);
+        const placeUnderThisElement = document.querySelector('textarea#description');
+        const imagesHolder = document.createElement('div');
+        imagesHolder.classList.add('imagesHolder');
+
+        // placeing the image holder in the DOM
+        placeUnderThisElement.parentElement.insertBefore(imagesHolder, placeUnderThisElement.nextSibling);
+
+
+        // Loop through all the files 
+        for (let i = 0; i < files.length; i++) {
+
+
+
+            const reader = new FileReader();
+            reader.onload = () => {
+                const img = document.createElement('img');
+                img.classList.add('previewPicture');
+                img.src = reader.result;
+                //placing the image in the image holder
+                imagesHolder.appendChild(img);
+            }
+
+            reader.readAsDataURL(files[i]);
+        }
 
     }
 }
