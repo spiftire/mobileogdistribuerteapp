@@ -328,11 +328,16 @@ class SalesPostHandler {
 
             const reader = new FileReader();
             reader.onload = () => {
+                const checkbox = document.createElement('input');
+                checkbox.type = "checkbox"
+                checkbox.classList.add('imageCheckbox');
                 const img = document.createElement('img');
                 img.classList.add('previewPicture');
                 img.src = reader.result;
-                //placing the image in the image holder
+                //placing the image in the checkbox
                 imagesHolder.appendChild(img);
+                // placing the checkbox in the imageholder
+                imagesHolder.appendChild(checkbox);
             }
 
             reader.readAsDataURL(files[i]);
