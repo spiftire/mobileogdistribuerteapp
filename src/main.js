@@ -153,7 +153,7 @@ class UI {
             <input type="num" id="price">
             <label for="description">Description</label>
             <textarea id="description"></textarea>
-            <label for="picture">Images</label>
+            <label for="picture" class="button">Add images</label>
             <input type="file" id="picture" accept="image/*" multiple>
             <div class="buttonHolder">
             <button class="button submit" type="submit">Submit sales item</button>
@@ -305,11 +305,8 @@ class Store {
 
 // Handels all tasks related to making a new sales post
 class SalesPostHandler {
-    static setupVariables() {
-        const salesItemFrom = document.querySelector('form.salesItemForm');
-        return salesItemFrom;
-    }
 
+    // Deletes the previous used picture preview element if any
     static deletePreveousPreview() {
         const imagesHolder = document.querySelector('.imagesHolder');
         if (imagesHolder) {
@@ -329,34 +326,55 @@ class SalesPostHandler {
         // placeing the image holder in the DOM
         placeUnderThisElement.parentElement.insertBefore(imagesHolder, placeUnderThisElement.nextSibling);
 
+        // Creatng the deleteImagesButton
+        const deleteImagesButton = SalesPostHandler.createDeleteButton();
+
+        // Adding delete images button after the add images button
+        const addImageButton = document.querySelector('input#picture');
+        if (!document.querySelector('button#deleteImages')) {
+            addImageButton.parentElement.insertBefore(deleteImagesButton, addImageButton);
+        }
+
         // Loop through all the files 
         for (let i = 0; i < files.length; i++) {
-
-
-
             const reader = new FileReader();
             reader.onload = () => {
-                // const checkbox = document.createElement('input');
-                // checkbox.type = "checkbox"
-                // checkbox.classList.add('imageCheckbox');
                 const img = document.createElement('img');
                 img.classList.add('previewPicture');
                 //Setting unique id for picture
                 img.id = i;
+                //Setting  the src of the image
                 img.src = reader.result;
-                //placing the image in the checkbox
+                //placing the image in the imageholder
                 imagesHolder.appendChild(img);
-                // placing the checkbox in the imageholder
-                // imagesHolder.appendChild(checkbox);
-
                 SalesPostHandler.addClickEventToImage(img);
             }
-
             reader.readAsDataURL(files[i]);
         }
-
-        imagesHolder.innerHTML = `<button class="button button-small" disabled id="deleteImages">Delete images</button>`;
     }
+
+    // Delete button
+    static createDeleteButton() {
+        const deleteImagesButton = document.createElement('button');
+        deleteImagesButton.innerHTML = 'Delete images';
+        deleteImagesButton.classList.add('button-small', 'button');
+        deleteImagesButton.id = 'deleteImages';
+        deleteImagesButton.setAttribute('disabled', '');
+        deleteImagesButton.addEventListener('click', () => {
+            SalesPostHandler.deleteImages();
+            SalesPostHandler.imagesHolderNeeded();
+            SalesPostHandler.toggleDeleteImageButton();
+        });
+        return deleteImagesButton;
+    }
+
+    // Checks if there is a need for a imageHolder. REmoves it of there are no images
+    static imagesHolderNeeded() {
+        if (document.querySelectorAll('img.previewPicture').length == 0) {
+            document.querySelector('div.imagesHolder').remove();
+        }
+    }
+
 
     // Click event for preview pictures
     static addClickEventToImage(img) {
@@ -367,7 +385,7 @@ class SalesPostHandler {
         })
     }
 
-    // Toggle the state of the delete images button
+    // Toggle the disabled attribute on the delete images button. Enabled if images is selected, disabled if no images selected
     static toggleDeleteImageButton() {
         const selected = document.querySelectorAll('img.selected');
         console.log(selected);
@@ -379,6 +397,15 @@ class SalesPostHandler {
 
         if (selected.length == 0 && !deleteButton.hasAttribute('disabled')) {
             deleteButton.toggleAttribute('disabled');
+        }
+    }
+
+    // Delete all the selected images from the DOM
+    static deleteImages() {
+        const images = document.querySelectorAll('img.selected');
+        for (let i = 0; i < images.length; i++) {
+            const image = images[i];
+            image.remove();
         }
     }
 }

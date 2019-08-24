@@ -17,6 +17,7 @@ header h1 {
     background-color: aqua;
     color: white;
     padding: .25em;
+    margin: 0;
 }
 
 section {
@@ -30,17 +31,21 @@ section h1 {
 }
 
 .button {
-    width: 25vw;
+    width: auto;
     min-width: auto;
     background: #ff5844;
     color: white;
     padding: 1em;
     border: none;
+    cursor: pointer;
 }
 
-.button:hover,
+.button:hover {
+    transform: scale(1.05);
+}
+
 .button:active {
-    box-shadow: .25rem .25rem .1rem 0rem rgba(0, 0, 0, 0.75);
+    transform: scale(.95);
 }
 
 .button:focus,
@@ -95,6 +100,30 @@ label {
     width: 100%;
 }
 
+.salesItemForm textarea {
+    resize: none;
+    height: 40vh;
+}
+
+.salesItemForm input[type="file"] {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+label[for=picture] {
+    font-size: 1.25rem;
+    color: white;
+    background-color: tomato;
+    display: inline-block;
+    padding: .25rem;
+    margin: .25rem 0;
+    cursor: pointer;
+}
+
 img.previewPicture {
     max-width: 100%;
 }
@@ -114,8 +143,8 @@ img.selected {
 }
 
 .button#deleteImages {
-    grid-column-end: -1;
-    grid-row-end: -1;
+    padding: .25rem;
+    font-size: 1.25rem;
 }
 
 .button:disabled {
