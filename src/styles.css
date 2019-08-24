@@ -79,6 +79,22 @@ label {
     text-align: left;
 }
 
-.no-grid {
-    display: initial;
+.salesItemForm {
+    /* padding: 0; */
+    display: block;
+    width: 500px;
+    text-align: left
+}
+
+.salesItemForm>* {
+    display: block;
+}
+
+.salesItemForm input,
+.salesItemForm textarea {
+    width: 100%;
+}
+
+img#previewImage {
+    max-width: 25%;
 }

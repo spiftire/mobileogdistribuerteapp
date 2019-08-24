@@ -140,14 +140,31 @@ class UI {
 
     static showAddNewItemForm() {
         UI.container.innerHTML = `
-        
+        <form class="salesItemForm">
+            <label for="title">Title</label>
+            <input type="text" id="title">
+            <label for="price">Price</label>
+            <input type="num" id="price">
+            <label for="description">Description</label>
+            <textarea id="description"></textarea>
+            <img src="" alt="preview picture" id="previewImage">
+            <label for="picture">Images</label>
+            <input type="file" id="picture" accept="image/x-png,image/gif,image/jpeg" multiple>
+        </form>
         `;
+
+
+
+        //Event: Trigger when picture input field is changed
+        const pictureInput = document.querySelector('input#picture');
+        pictureInput.addEventListener('change', function (e) {
+            SalesPostHandler.showPreviewPicture(e);
+        });
     }
 }
 
 // Auth class: Handeling authentication of users
 class Auth {
-
     // Logging in user
     static logIn() {
         const userID = document.querySelector('#userID').value;
@@ -237,8 +254,7 @@ class SaleItem {
 
 // Store class: To handle local storage
 class Store {
-
-
+    // Gets the current logged in user
     static getCurrentUser() {
         let user;
         if (localStorage.getItem('loggedInUser') === null) {
@@ -249,6 +265,7 @@ class Store {
         return user;
     }
 
+    // Gets all the users that are registered
     static getAllUsers() {
         let users;
         if (localStorage.getItem('users') === null) {
@@ -259,18 +276,44 @@ class Store {
         return users;
     }
 
+    // Adds a new user to the registry
     static addNewUserToRegistry(user) {
         let users = Store.getAllUsers();
         users.push(user);
         localStorage.setItem('users', JSON.stringify(users));
     }
 
+    // Adds the logged in user to the local storage to keep user logged in after refresh or window close
     static addLoggedInUser(user) {
         localStorage.setItem('loggedInUser', JSON.stringify(user));
     }
 
+    // Removes the logged in user from local storage
     static removeLoggedInUser() {
         localStorage.removeItem('user');
+    }
+}
+
+// Handels all tasks related to making a new sales post
+class SalesPostHandler {
+    static setupVariables() {
+        const salesItemFrom = document.querySelector('form.salesItemForm');
+        return salesItemFrom;
+    }
+
+    static showPreviewPicture(event) {
+        const salesItemForm = SalesPostHandler.setupVariables();
+        const imgHolder = salesItemForm.querySelector('img#previewImage');
+        const fileInput = salesItemForm.querySelector('input#picture');
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            imgHolder.src = reader.result;
+        }
+
+        console.log(event);
+        reader.readAsDataURL(event.target.files[0]);
+
     }
 }
 
@@ -280,5 +323,5 @@ if (!Auth.isLoggedIn()) {
     UI.showLoginForm();
 } else {
     UI.showUsernameAtTop(Store.getCurrentUser());
-    UI.showStore();
+    UI.showAddNewItemForm();
 }
