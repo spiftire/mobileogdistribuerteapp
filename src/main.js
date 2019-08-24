@@ -14,7 +14,9 @@ class User {
 
 // UsersRegistry: A class to hold all the reigstered users
 class UsersRegistry {
-    users = [];
+    constructor() {
+        users = [];
+    }
 
     static grabAllUsers() {
         return JSON.parse(localStorage.getItem('users'));
@@ -35,16 +37,18 @@ class SalesItemsRegistry {
 // UI class: Handeling UI
 class UI {
     // Grabbing the container element
-    static container = document.querySelector(".container");
-    static buttonOrUser = document.querySelector("#buttonOrUser");
+    // constructor() {
+    // }
 
     static showUsernameAtTop(user) {
-        this.buttonOrUser.innerHTML = `${user.username}`;
+        const buttonOrUser = document.querySelector("#buttonOrUser");
+        buttonOrUser.innerHTML = `${user.username}`;
     }
 
     static showLoginForm() {
         // Creating the login form
-        UI.container.innerHTML = `
+        const container = document.querySelector(".container");
+        container.innerHTML = `
         <h1>Login</h1>
         <div class="logininfo">
             <form>
@@ -70,7 +74,8 @@ class UI {
     };
 
     static showCreateNewUser() {
-        UI.container.innerHTML = `
+        const container = document.querySelector(".container");
+        container.innerHTML = `
         <h1>Create User</h1>
         <form>
         <label for="firstname">Firstname
@@ -139,7 +144,8 @@ class UI {
     }
 
     static showAddNewItemForm() {
-        UI.container.innerHTML = `
+        const container = document.querySelector(".container");
+        container.innerHTML = `
         <form class="salesItemForm">
             <label for="title">Title</label>
             <input type="text" id="title">
@@ -148,7 +154,11 @@ class UI {
             <label for="description">Description</label>
             <textarea id="description"></textarea>
             <label for="picture">Images</label>
-            <input type="file" id="picture" accept="image/x-png,image/gif,image/jpeg" multiple>
+            <input type="file" id="picture" accept="image/*" multiple>
+            <div class="buttonHolder">
+            <button class="button submit" type="submit">Submit sales item</button>
+            <button class="button cancel" type="cancel">Cancel</button>
+            </div>
         </form>
         `;
 
@@ -312,14 +322,12 @@ class SalesPostHandler {
     static showPreviewPicture(event) {
         SalesPostHandler.deletePreveousPreview();
         const files = event.target.files;
-        console.log(files);
         const placeUnderThisElement = document.querySelector('textarea#description');
         const imagesHolder = document.createElement('div');
         imagesHolder.classList.add('imagesHolder');
 
         // placeing the image holder in the DOM
         placeUnderThisElement.parentElement.insertBefore(imagesHolder, placeUnderThisElement.nextSibling);
-
 
         // Loop through all the files 
         for (let i = 0; i < files.length; i++) {
@@ -328,21 +336,50 @@ class SalesPostHandler {
 
             const reader = new FileReader();
             reader.onload = () => {
-                const checkbox = document.createElement('input');
-                checkbox.type = "checkbox"
-                checkbox.classList.add('imageCheckbox');
+                // const checkbox = document.createElement('input');
+                // checkbox.type = "checkbox"
+                // checkbox.classList.add('imageCheckbox');
                 const img = document.createElement('img');
                 img.classList.add('previewPicture');
+                //Setting unique id for picture
+                img.id = i;
                 img.src = reader.result;
                 //placing the image in the checkbox
                 imagesHolder.appendChild(img);
                 // placing the checkbox in the imageholder
-                imagesHolder.appendChild(checkbox);
+                // imagesHolder.appendChild(checkbox);
+
+                SalesPostHandler.addClickEventToImage(img);
             }
 
             reader.readAsDataURL(files[i]);
         }
 
+        imagesHolder.innerHTML = `<button class="button button-small" disabled id="deleteImages">Delete images</button>`;
+    }
+
+    // Click event for preview pictures
+    static addClickEventToImage(img) {
+        console.log('Click event been added');
+        img.addEventListener('click', () => {
+            img.classList.toggle('selected');
+            SalesPostHandler.toggleDeleteImageButton();
+        })
+    }
+
+    // Toggle the state of the delete images button
+    static toggleDeleteImageButton() {
+        const selected = document.querySelectorAll('img.selected');
+        console.log(selected);
+        const deleteButton = document.querySelector('button#deleteImages');
+
+        if (selected.length > 0 && deleteButton.hasAttribute('disabled')) {
+            deleteButton.toggleAttribute('disabled')
+        }
+
+        if (selected.length == 0 && !deleteButton.hasAttribute('disabled')) {
+            deleteButton.toggleAttribute('disabled');
+        }
     }
 }
 
