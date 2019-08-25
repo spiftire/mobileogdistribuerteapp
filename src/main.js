@@ -169,8 +169,6 @@ class UI {
 
     static showAllSaleItems() {
         const salesItems = SalesItemsRegistry.getAllSalesItems();
-        console.log(salesItems);
-
         const container = document.querySelector(".container");
         container.innerHTML = '';
         if (salesItems === null) {
@@ -199,10 +197,8 @@ class UI {
     static addEventListenerToSalesItems() {
         const salesItems = document.querySelectorAll('div.salesItem')
         for (let i = 0; i < salesItems.length; i++) {
-            console.log("adding event listener to sales items");
 
             salesItems[i].addEventListener('click', () => {
-                console.log('Item clicked' + i);
 
                 UI.showSalesItemDetails(i);
             })
@@ -249,9 +245,10 @@ class UI {
     }
 
     static showAddNewItemForm() {
-        const container = document.querySelector(".container");
-        container.innerHTML = `
-        <form class="salesItemForm">
+        if (Auth.isLoggedIn) {
+            const container = document.querySelector(".container");
+            container.innerHTML = `
+            <form class="salesItemForm">
             <label for="title">Title</label>
             <input type="text" id="title" required>
             <label for="price">Price</label>
@@ -264,27 +261,30 @@ class UI {
             <input class="button submit" type="submit" value="Submit sales item">
             <input class="button cancel" type="reset" value="Cancel">
             </div>
-        </form>
-        `;
+            </form>
+            `;
 
-        //Event: Trigger when picture input field is changed
-        const pictureInput = document.querySelector('input#picture');
-        pictureInput.addEventListener('change', function (e) {
-            SalesPostHandler.showPreviewPicture(e);
-        });
+            //Event: Trigger when picture input field is changed
+            const pictureInput = document.querySelector('input#picture');
+            pictureInput.addEventListener('change', function (e) {
+                SalesPostHandler.showPreviewPicture(e);
+            });
 
-        //Event: Cancel button should reset form and send user to home screen
-        // TODO finish this
-        const cancelButton = document.querySelector('input[type="reset"');
-        // cancelButton.addEventListener('click', salesItemForm.reset;
+            //Event: Cancel button should reset form and send user to home screen
+            // TODO finish this
+            const cancelButton = document.querySelector('input[type="reset"');
+            cancelButton.addEventListener('click', () => {
+                UI.showStore();
+            });
 
-        // Event: Submit
-        const salesItemForm = document.querySelector('form.salesItemForm');
-        salesItemForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            SalesPostHandler.validateSalesItemForm(salesItemForm);
-        })
-
+            // Event: Submit
+            const salesItemForm = document.querySelector('form.salesItemForm');
+            salesItemForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                SalesPostHandler.validateSalesItemForm(salesItemForm);
+                UI.showStore();
+            })
+        }
     }
 }
 
@@ -302,8 +302,6 @@ class Auth {
 
 
         if (Auth.checkUsernameAndPassword(user)) {
-            console.log(Auth.checkUsernameAndPassword(user));
-
             Store.addLoggedInUser(user);
             UI.showUsernameAtTop(user);
             UI.showStore();
@@ -314,10 +312,8 @@ class Auth {
     static checkUsernameAndPassword(user) {
         let match = false;
         const users = UsersRegistry.grabAllUsers();
-        console.log(users);
 
         users.forEach(element => {
-            console.log(element.username);
 
             if (element.username === user.username && element.password === user.password) {
                 match = true;
@@ -344,7 +340,6 @@ class Auth {
         const password = document.querySelector('#password').value;
 
         const user = new User(firstname, lastname, streetaddress, postalcode, city, email, username, password);
-        console.log(user);
         return user;
 
     }
@@ -496,7 +491,6 @@ class SalesPostHandler {
 
     // Click event for preview pictures
     static addClickEventToImage(img) {
-        console.log('Click event been added');
         img.addEventListener('click', () => {
             img.classList.toggle('selected');
             SalesPostHandler.toggleDeleteImageButton();
@@ -506,7 +500,6 @@ class SalesPostHandler {
     // Toggle the disabled attribute on the delete images button. Enabled if images is selected, disabled if no images selected
     static toggleDeleteImageButton() {
         const selected = document.querySelectorAll('img.selected');
-        console.log(selected);
         const deleteButton = document.querySelector('button#deleteImages');
 
         if (selected.length > 0 && deleteButton.hasAttribute('disabled')) {
