@@ -108,7 +108,7 @@ class UI {
         container.innerHTML = `
         <h1>Login</h1>
         <div class="logininfo">
-            <form>
+            <form id="loginForm">
                 <label for="userID">User id:
                 </label>
                 <input type="text" id="userID" placeholder="username">
@@ -126,8 +126,8 @@ class UI {
         createNewUserLink.addEventListener('click', UI.showCreateNewUserForm);
 
         // Event: Login button click event
-        const loginButton = document.querySelector('#loginButton');
-        loginButton.addEventListener('click', Auth.logIn);
+        const loginForm = document.querySelector('#loginForm');
+        loginForm.addEventListener('submit', Auth.logIn);
     };
 
     // Shows the create new user form
@@ -166,16 +166,14 @@ class UI {
 
         // Event: Creat new user if submit
         const createNewUserForm = document.querySelector('#createNewUserForm');
-        console.log(createNewUserForm);
-
-        createNewUserForm.addEventListener('submit', () => {
-            console.log("Happening");
-
+        createNewUserForm.addEventListener('submit', (e) => {
+            e.preventDefault();
             Auth.createNewUser();
             UI.showStore();
         });
     }
 
+    // Shows all the sales items that are in the registry
     static showAllSaleItems() {
         const salesItems = SalesItemsRegistry.getAllSalesItems();
         const container = document.querySelector(".container");
@@ -194,7 +192,6 @@ class UI {
                 <img class="previewPicture" src=${salesItem.pictures[0]} >
                 `;
                 div.innerHTML = markup;
-
                 container.appendChild(div);
             })
 
@@ -203,31 +200,35 @@ class UI {
         }
     }
 
+    // Adds event click event listeners to all the sales items
     static addEventListenerToSalesItems() {
         const salesItems = document.querySelectorAll('div.salesItem')
         for (let i = 0; i < salesItems.length; i++) {
-
             salesItems[i].addEventListener('click', () => {
-
                 UI.showSalesItemDetails(i);
             })
         }
     }
 
+    // Adds new sales item button to the screen if the user is logged in
     static showAddNewSalesItemButton() {
-        // Making and creating the button
-        const addNewSalesItemButton = document.createElement('button');
-        addNewSalesItemButton.classList.add('addNewSalesItem', 'button');
-        addNewSalesItemButton.innerText = '+';
+        if (Auth.isLoggedIn()) {
 
-        // Adding the button to the DOM
-        const container = document.querySelector(".container");
-        container.appendChild(addNewSalesItemButton);
+            // Making and creating the button
+            const addNewSalesItemButton = document.createElement('button');
+            addNewSalesItemButton.classList.add('addNewSalesItem', 'button');
+            addNewSalesItemButton.innerText = '+';
 
-        // Adding click eventlistner
-        addNewSalesItemButton.addEventListener('click', UI.showAddNewItemForm);
+            // Adding the button to the DOM
+            const container = document.querySelector(".container");
+            container.appendChild(addNewSalesItemButton);
+
+            // Adding click eventlistner
+            addNewSalesItemButton.addEventListener('click', UI.showAddNewItemForm);
+        }
     }
 
+    // Shows the sales item details
     static showSalesItemDetails(salesItemID) {
         const container = document.querySelector(".container");
         const salesItem = SalesItemsRegistry.getItemByID(salesItemID);
@@ -246,13 +247,13 @@ class UI {
         container.appendChild(div);
     }
 
+    // Shows the store with all the sales items
     static showStore() {
         UI.showAllSaleItems();
-        if (Auth.isLoggedIn()) {
-            UI.showAddNewSalesItemButton();
-        }
+        UI.showAddNewSalesItemButton();
     }
 
+    // Shows the add new item form
     static showAddNewItemForm() {
         if (Auth.isLoggedIn) {
             const container = document.querySelector(".container");
@@ -346,16 +347,14 @@ class Auth {
         const email = document.querySelector('#email').value;
         const username = document.querySelector('#username').value;
         const password = document.querySelector('#password').value;
-
         const user = new User(firstname, lastname, streetaddress, postalcode, city, email, username, password);
         return user;
-
     }
 
     // Check if there is a user logged in or not
     static isLoggedIn() {
-        const user = Store.getCurrentUser();
         let returnValue = false;
+        const user = Store.getCurrentUser();
 
         if (user !== null) {
             returnValue = true;
@@ -551,13 +550,6 @@ class SalesPostHandler {
 
 // Main program
 UI.start();
-// if (!Auth.isLoggedIn()) {
-//     UI.showLoginForm();
-// } else {
-//     UI.showUsernameAtTop();
-//     UI.showStore();
-//     // UI.showAddNewItemForm();
-// }
 
 // todo add submit event listeneres to buttons
 // todo cancel button should trigger this.reset();
