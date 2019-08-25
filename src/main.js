@@ -142,12 +142,6 @@ class UI {
             container.innerHTML = 'Nothing in register';
         } else {
             salesItems.forEach((salesItem) => {
-                // Grabbing the first image of the post and retriving data
-                const imageData = salesItem.pictures[0];
-                const image = new Image();
-                image.src = imageData;
-                image.classList.add('previewPicture')
-
                 // Creating the markup for the post
                 const div = document.createElement('div');
                 div.classList.add('salesItem');
@@ -155,14 +149,28 @@ class UI {
                 <h2> ${salesItem.title} </h2>
                 <h3> ${salesItem.price} </h3>
                 <p> ${salesItem.description} </p>
+                <img class="previewPicture" src=${salesItem.pictures[0]} >
+
                 `;
-                console.log(markup);
                 div.innerHTML = markup;
 
                 container.appendChild(div);
-                console.log(div);
+            })
 
-                div.appendChild(image);
+            // Adding event listener for the div.
+            UI.addEventListenerToSalesItems();
+        }
+    }
+
+    static addEventListenerToSalesItems() {
+        const salesItems = document.querySelectorAll('div.salesItem')
+        for (let i = 0; i < salesItems.length; i++) {
+            console.log("adding event listener to sales items");
+
+            salesItems[i].addEventListener('click', () => {
+                console.log('Item clicked' + i);
+
+                UI.showSalesItemDetails(i);
             })
         }
     }
@@ -191,11 +199,12 @@ class UI {
             <h2> ${salesItem.title} </h2>
             <h3> ${salesItem.price} </h3>
             <p> ${salesItem.description} </p>
-            <img src=${salesItem.pictureData} >
+            <img src=${salesItem.pictures[0]} >
         `;
 
-        div.appendChild(markup);
-        container.innerHTML = div;
+        div.innerHTML = markup;
+        container.innerHTML = '';
+        container.appendChild(div);
     }
 
     static showStore() {
