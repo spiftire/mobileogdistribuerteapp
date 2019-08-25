@@ -20,6 +20,24 @@ header h1 {
     margin: 0;
 }
 
+header h1 a,
+header h1 a:visited,
+header h1 a:hover {
+    color: white;
+    text-decoration: none;
+}
+
+header>div>a {
+    text-decoration: none;
+    color: grey;
+    font-weight: 600;
+}
+
+header>div>a:hover {
+    text-decoration: underline;
+    text-decoration-color: grey;
+}
+
 section {
     text-align: center;
     padding: 2rem;
@@ -206,4 +224,37 @@ div.salesItem h3 {
 div.salesItem p {
     grid-area: description;
     align-self: flex-start;
+}
+
+/* Styling the sales item details */
+div.salesItemDetails {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 2fr auto auto auto;
+    grid-template-areas:
+        "picture"
+        "title"
+        "price"
+        "description";
+    grid-gap: .5rem;
+    text-align: left;
+    margin: 0 auto;
+}
+
+div.salesItemDetails h2 {
+    grid-area: title;
+}
+
+div.salesItemDetails h3 {
+    grid-area: price;
+}
+
+div.salesItemDetails p {
+    grid-area: description;
+}
+
+div.salesItemDetails img {
+    grid-area: picture;
+    max-height: 50vh;
+    justify-self: center;
 }

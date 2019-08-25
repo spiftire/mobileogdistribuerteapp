@@ -58,13 +58,47 @@ class SalesItemsRegistry {
 
 // UI class: Handeling UI
 class UI {
+
+    static start() {
+        UI.showStore();
+        if (Auth.isLoggedIn()) {
+            UI.showUsernameAtTop()
+        } else {
+            UI.showLoginButton();
+        }
+
+        // Event: Listen for home click.
+        UI.addEventListnerToLogo();
+    }
+
+    static addEventListnerToLogo() {
+        const logo = document.querySelector('h1#logo');
+        logo.addEventListener('click', () => {
+            UI.showStore();
+        })
+    };
+
     // Grabbing the container element
     // constructor() {
     // }
+    static showLoginButton() {
+        if (!Auth.isLoggedIn()) {
+            const div = document.querySelector('div#buttonOrUser');
+            const markup = `<a href="#">Login</a>`;
+            div.innerHTML = markup;
+            div.addEventListener('click', () => {
+                UI.showLoginForm();
+            })
 
-    static showUsernameAtTop(user) {
-        const buttonOrUser = document.querySelector("#buttonOrUser");
-        buttonOrUser.innerHTML = `${user.username}`;
+        }
+    }
+
+    static showUsernameAtTop() {
+        if (Auth.isLoggedIn()) {
+            const buttonOrUser = document.querySelector("#buttonOrUser");
+            const user = Store.getCurrentUser()
+            buttonOrUser.innerHTML = `${user.username}`;
+        }
     }
 
     static showLoginForm() {
@@ -138,6 +172,7 @@ class UI {
         console.log(salesItems);
 
         const container = document.querySelector(".container");
+        container.innerHTML = '';
         if (salesItems === null) {
             container.innerHTML = 'Nothing in register';
         } else {
@@ -150,7 +185,6 @@ class UI {
                 <h3> ${salesItem.price} </h3>
                 <p> ${salesItem.description} </p>
                 <img class="previewPicture" src=${salesItem.pictures[0]} >
-
                 `;
                 div.innerHTML = markup;
 
@@ -209,7 +243,9 @@ class UI {
 
     static showStore() {
         UI.showAllSaleItems();
-        UI.showAddNewSalesItemButton();
+        if (Auth.isLoggedIn()) {
+            UI.showAddNewSalesItemButton();
+        }
     }
 
     static showAddNewItemForm() {
@@ -513,13 +549,14 @@ class SalesPostHandler {
 
 
 // Main program
-if (!Auth.isLoggedIn()) {
-    UI.showLoginForm();
-} else {
-    UI.showUsernameAtTop(Store.getCurrentUser());
-    UI.showStore();
-    // UI.showAddNewItemForm();
-}
+UI.start();
+// if (!Auth.isLoggedIn()) {
+//     UI.showLoginForm();
+// } else {
+//     UI.showUsernameAtTop();
+//     UI.showStore();
+//     // UI.showAddNewItemForm();
+// }
 
 // todo add submit event listeneres to buttons
 // todo cancel button should trigger this.reset();
