@@ -71,6 +71,7 @@ class UI {
         UI.addEventListnerToLogo();
     }
 
+    // Event for the logo up top
     static addEventListnerToLogo() {
         const logo = document.querySelector('h1#logo');
         logo.addEventListener('click', () => {
@@ -78,9 +79,7 @@ class UI {
         })
     };
 
-    // Grabbing the container element
-    // constructor() {
-    // }
+    // Show the login button if the user is not logged in
     static showLoginButton() {
         if (!Auth.isLoggedIn()) {
             const div = document.querySelector('div#buttonOrUser');
@@ -93,6 +92,7 @@ class UI {
         }
     }
 
+    // Show username up top if user is logged in
     static showUsernameAtTop() {
         if (Auth.isLoggedIn()) {
             const buttonOrUser = document.querySelector("#buttonOrUser");
@@ -101,6 +101,7 @@ class UI {
         }
     }
 
+    // Shows the login form
     static showLoginForm() {
         // Creating the login form
         const container = document.querySelector(".container");
@@ -120,51 +121,59 @@ class UI {
         <a href="#" id="createNewUser">Creat new user</a> <!-- todo link to creat user page-->
         `;
 
-        // Events: Create new user
+        // Events: Create new user click event
         const createNewUserLink = document.querySelector('#createNewUser');
-        createNewUserLink.addEventListener('click', UI.showCreateNewUser);
+        createNewUserLink.addEventListener('click', UI.showCreateNewUserForm);
 
-        // Event: Login
+        // Event: Login button click event
         const loginButton = document.querySelector('#loginButton');
         loginButton.addEventListener('click', Auth.logIn);
     };
 
-    static showCreateNewUser() {
+    // Shows the create new user form
+    static showCreateNewUserForm() {
         const container = document.querySelector(".container");
         container.innerHTML = `
         <h1>Create User</h1>
-        <form>
-        <label for="firstname">Firstname
-        </label>
-            <input type="text"  id="firstname" placeholder="Firstname">
+        <form id="createNewUserForm">
+            <label for="firstname">Firstname
+            </label>
+            <input type="text"  id="firstname" placeholder="Firstname" required>
             <label for="lastname">Lastname
             </label>
-            <input type="text"  id="lastname" placeholder="Lastname">
+            <input type="text"  id="lastname" placeholder="Lastname" required>
             <label for="streetaddress">Street address
             </label>
-            <input type="text"  id="streetaddress" placeholder="Street and number">
+            <input type="text"  id="streetaddress" placeholder="Street and number" required>
             <label for="city">City
             </label>
-            <input type="text"  id="city" placeholder="City">
+            <input type="text"  id="city" placeholder="City" required>
             <label for="postalcode">Postal code
             </label>
-            <input type="text"  id="postalcode" placeholder="Postal code">
+            <input type="text"  id="postalcode" placeholder="Postal code" required>
             <label for="email">Email address
             </label>
-            <input type="email"  id="email" placeholder="Email address">
+            <input type="email"  id="email" placeholder="Email address" required>
             <label for="username">Username
             </label>
-            <input type="text"  id="username" placeholder="Username">
+            <input type="text"  id="username" placeholder="Username" required>
             <label for="password">Password
             </label>
-            <input type="password" id="password" placeholder="Password">
-            <button type="submit" class="button submit" id="creatNewUserButton">Create User</button>
+            <input type="password" id="password" placeholder="Password" required>
+            <input type="submit" class="button submit" id="creatNewUserButton" value="Create User">
         </form>
         `;
 
-        // Event: Creat new user
-        const creatNewUserButton = document.querySelector('#creatNewUserButton');
-        creatNewUserButton.addEventListener('click', Auth.createNewUser);
+        // Event: Creat new user if submit
+        const createNewUserForm = document.querySelector('#createNewUserForm');
+        console.log(createNewUserForm);
+
+        createNewUserForm.addEventListener('submit', () => {
+            console.log("Happening");
+
+            Auth.createNewUser();
+            UI.showStore();
+        });
     }
 
     static showAllSaleItems() {
@@ -271,7 +280,6 @@ class UI {
             });
 
             //Event: Cancel button should reset form and send user to home screen
-            // TODO finish this
             const cancelButton = document.querySelector('input[type="reset"');
             cancelButton.addEventListener('click', () => {
                 UI.showStore();
@@ -555,4 +563,3 @@ UI.start();
 // todo cancel button should trigger this.reset();
 // todo how to make html elements easier in JS
 // todo encrypting password
-// todo implement routing and changing of screens whene something is done
