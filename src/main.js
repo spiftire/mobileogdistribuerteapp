@@ -30,6 +30,13 @@ class SalesItemsRegistry {
         return salesItems;
     }
 
+    // Gets a spesific sales item from the registry based on ID. The ID is the index in the registry
+    static getItemByID(id) {
+        const salesItems = SalesItemsRegistry.getAllSalesItems();
+        const salesItem = salesItems[id];
+        return salesItem;
+    }
+
     // Updates the local storage
     static updateRegistry(salesItems) {
         const allSalesItems = [];
@@ -172,6 +179,23 @@ class UI {
 
         // Adding click eventlistner
         addNewSalesItemButton.addEventListener('click', UI.showAddNewItemForm);
+    }
+
+    static showSalesItemDetails(salesItemID) {
+        const container = document.querySelector(".container");
+        const salesItem = SalesItemsRegistry.getItemByID(salesItemID);
+        const div = document.createElement('div');
+        div.classList.add('salesItemDetails');
+
+        const markup = `
+            <h2> ${salesItem.title} </h2>
+            <h3> ${salesItem.price} </h3>
+            <p> ${salesItem.description} </p>
+            <img src=${salesItem.pictureData} >
+        `;
+
+        div.appendChild(markup);
+        container.innerHTML = div;
     }
 
     static showStore() {
