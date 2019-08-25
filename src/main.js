@@ -12,17 +12,6 @@ class User {
     }
 }
 
-// UsersRegistry: A class to hold all the reigstered users
-class UsersRegistry {
-    constructor() {
-        users = [];
-    }
-
-    static grabAllUsers() {
-        return JSON.parse(localStorage.getItem('users'));
-    }
-}
-
 // Sales Item registry: Holds and handles all the sales Items
 class SalesItemsRegistry {
     static getAllSalesItems() {
@@ -96,7 +85,7 @@ class UI {
     static showUsernameAtTop() {
         if (Auth.isLoggedIn()) {
             const buttonOrUser = document.querySelector("#buttonOrUser");
-            const user = Store.getCurrentUser()
+            const user = UsersRegistry.getCurrentUser()
             buttonOrUser.innerHTML = `${user.username}`;
         }
     }
@@ -311,7 +300,7 @@ class Auth {
 
 
         if (Auth.checkUsernameAndPassword(user)) {
-            Store.addLoggedInUser(user);
+            UsersRegistry.addLoggedInUser(user);
             UI.showUsernameAtTop(user);
             UI.showStore();
         };
@@ -320,7 +309,7 @@ class Auth {
     // Check if the user exist in user registry. Returns true if user exist, and false if not.
     static checkUsernameAndPassword(user) {
         let match = false;
-        const users = UsersRegistry.grabAllUsers();
+        const users = UsersRegistry.getAllUsers();
 
         users.forEach(element => {
 
@@ -354,7 +343,7 @@ class Auth {
     // Check if there is a user logged in or not
     static isLoggedIn() {
         let returnValue = false;
-        const user = Store.getCurrentUser();
+        const user = UsersRegistry.getCurrentUser();
 
         if (user !== null) {
             returnValue = true;
@@ -365,7 +354,7 @@ class Auth {
 
     // Adds new user to the store
     static addNewUserToStore(user) {
-        Store.addNewUserToRegistry(user);
+        UsersRegistry.addNewUserToRegistry(user);
     }
 }
 
@@ -380,9 +369,8 @@ class SalesItem {
     // todo Evaluate data
 }
 
-
-// Store class: To handle local storage
-class Store {
+// UsersRegistry: A class to hold all the reigstered users
+class UsersRegistry {
     // Gets the current logged in user
     static getCurrentUser() {
         let user;
@@ -407,7 +395,7 @@ class Store {
 
     // Adds a new user to the registry
     static addNewUserToRegistry(user) {
-        let users = Store.getAllUsers();
+        let users = UsersRegistry.getAllUsers();
         users.push(user);
         localStorage.setItem('users', JSON.stringify(users));
     }
@@ -480,6 +468,8 @@ class SalesPostHandler {
         deleteImagesButton.classList.add('button-small', 'button');
         deleteImagesButton.id = 'deleteImages';
         deleteImagesButton.setAttribute('disabled', '');
+
+        // Add delete event 
         deleteImagesButton.addEventListener('click', () => {
             SalesPostHandler.deleteImages();
             SalesPostHandler.imagesHolderNeeded();
