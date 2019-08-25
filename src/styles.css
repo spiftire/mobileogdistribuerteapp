@@ -183,6 +183,12 @@ div.salesItem {
     grid-gap: .5rem;
     align-items: center;
     text-align: left;
+    margin: .5rem
+}
+
+div.salesItem:hover {
+    cursor: pointer;
+    border: tomato .1rem solid
 }
 
 div.salesItem img {

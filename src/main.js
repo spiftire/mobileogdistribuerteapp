@@ -140,19 +140,19 @@ class UI {
                 const image = new Image();
                 image.src = imageData;
                 image.classList.add('previewPicture')
-                console.log(image);
 
                 // Creating the markup for the post
+                const div = document.createElement('div');
+                div.classList.add('salesItem');
                 const markup = `
-                <div class="salesItem">
                 <h2> ${salesItem.title} </h2>
                 <h3> ${salesItem.price} </h3>
                 <p> ${salesItem.description} </p>
-                </div>`;
+                `;
                 console.log(markup);
+                div.innerHTML = markup;
 
-                container.innerHTML = markup;
-                const div = document.querySelector('.salesItem');
+                container.appendChild(div);
                 console.log(div);
 
                 div.appendChild(image);
