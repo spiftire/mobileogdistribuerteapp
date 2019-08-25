@@ -100,10 +100,10 @@ class UI {
             <form id="loginForm">
                 <label for="userID">User id:
                 </label>
-                <input type="text" id="userID" placeholder="username">
+                <input type="text" id="userID" placeholder="username" required>
                 <label for="userpassword">Password:
                 </label>
-                <input type="password" id="userpassword" placeholder="password">
+                <input type="password" id="userpassword" placeholder="password" required>
                 <button type="submit" class="button submit" id="loginButton">Login</button>
             </form>
         </div>
