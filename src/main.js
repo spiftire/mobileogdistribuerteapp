@@ -26,11 +26,26 @@ class UsersRegistry {
 // Sales Item registry: Holds and handles all the sales Items
 class SalesItemsRegistry {
     static getAllSalesItems() {
-        return JSON.parse(localStorage.getItem('salesItems'));
+        const salesItems = JSON.parse(localStorage.getItem('salesItems'));
+        return salesItems;
     }
 
+    // Updates the local storage
     static updateRegistry(salesItems) {
-        localStorage.setItem('salesItem', JSON.stringify(salesItems));
+        const allSalesItems = [];
+        if (SalesItemsRegistry.getAllSalesItems() !== null) {
+
+            SalesItemsRegistry.getAllSalesItems().forEach((salesItem) => {
+                allSalesItems.push(salesItem);
+            });
+        }
+        allSalesItems.push(salesItems);
+        localStorage.setItem('salesItems', JSON.stringify(allSalesItems));
+    }
+
+    // Submit to registry
+    static submitToLocalStorage(salesItem) {
+        SalesItemsRegistry.updateRegistry(salesItem);
     }
 }
 
@@ -113,26 +128,47 @@ class UI {
 
     static showAllSaleItems() {
         const salesItems = SalesItemsRegistry.getAllSalesItems();
+        console.log(salesItems);
+
+        const container = document.querySelector(".container");
         if (salesItems === null) {
-            UI.container.innerHTML = '';
-            return
-        }
-        salesItems.forEach((salesItem) => {
-            UI.container.innerHTML = `<div>
+            container.innerHTML = 'Nothing in register';
+        } else {
+            salesItems.forEach((salesItem) => {
+                // Grabbing the first image of the post and retriving data
+                const imageData = salesItem.pictures[0];
+                const image = new Image();
+                image.src = imageData;
+                image.classList.add('previewPicture')
+                console.log(image);
+
+                // Creating the markup for the post
+                const markup = `
+                <div class="salesItem">
                 <h2> ${salesItem.title} </h2>
                 <h3> ${salesItem.price} </h3>
                 <p> ${salesItem.description} </p>
-            </div>`;
-        })
+                </div>`;
+                console.log(markup);
+
+                container.innerHTML = markup;
+                const div = document.querySelector('.salesItem');
+                console.log(div);
+
+                div.appendChild(image);
+            })
+        }
     }
 
     static showAddNewSalesItemButton() {
+        // Making and creating the button
         const addNewSalesItemButton = document.createElement('button');
         addNewSalesItemButton.classList.add('addNewSalesItem', 'button');
         addNewSalesItemButton.innerText = '+';
-        console.log(addNewSalesItemButton);
 
-        UI.container.appendChild(addNewSalesItemButton);
+        // Adding the button to the DOM
+        const container = document.querySelector(".container");
+        container.appendChild(addNewSalesItemButton);
 
         // Adding click eventlistner
         addNewSalesItemButton.addEventListener('click', UI.showAddNewItemForm);
@@ -148,27 +184,38 @@ class UI {
         container.innerHTML = `
         <form class="salesItemForm">
             <label for="title">Title</label>
-            <input type="text" id="title">
+            <input type="text" id="title" required>
             <label for="price">Price</label>
-            <input type="num" id="price">
+            <input type="num" id="price" required>
             <label for="description">Description</label>
             <textarea id="description"></textarea>
             <label for="picture" class="button">Add images</label>
             <input type="file" id="picture" accept="image/*" multiple>
             <div class="buttonHolder">
-            <button class="button submit" type="submit">Submit sales item</button>
-            <button class="button cancel" type="cancel">Cancel</button>
+            <input class="button submit" type="submit" value="Submit sales item">
+            <input class="button cancel" type="reset" value="Cancel">
             </div>
         </form>
         `;
-
-
 
         //Event: Trigger when picture input field is changed
         const pictureInput = document.querySelector('input#picture');
         pictureInput.addEventListener('change', function (e) {
             SalesPostHandler.showPreviewPicture(e);
         });
+
+        //Event: Cancel button should reset form and send user to home screen
+        // TODO finish this
+        const cancelButton = document.querySelector('input[type="reset"');
+        // cancelButton.addEventListener('click', salesItemForm.reset;
+
+        // Event: Submit
+        const salesItemForm = document.querySelector('form.salesItemForm');
+        salesItemForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            SalesPostHandler.validateSalesItemForm(salesItemForm);
+        })
+
     }
 }
 
@@ -252,12 +299,14 @@ class Auth {
 }
 
 // Sale item class: Representing a sale item
-class SaleItem {
-    constructor(title, price, description) {
+class SalesItem {
+    constructor(title, price, description, pictures) {
         this.title = title;
         this.price = price; // A integer in NOK
         this.description = description;
+        this.pictures = pictures;
     }
+    // todo Evaluate data
 }
 
 
@@ -408,6 +457,25 @@ class SalesPostHandler {
             image.remove();
         }
     }
+
+    // Validate form
+    static validateSalesItemForm(form) {
+        const title = form.querySelector('#title').value;
+        const price = form.querySelector('#price').value;
+        const description = form.querySelector('#description').value;
+        const imagesHolder = form.querySelector('div.imagesHolder');
+        const pictures = [];
+
+        for (let i = 0; i < imagesHolder.childNodes.length; i++) {
+            const pictureData = imagesHolder.childNodes[i].src;
+            pictures.push(pictureData);
+        }
+
+
+
+        const salesItem = new SalesItem(title, price, description, pictures);
+        SalesItemsRegistry.submitToLocalStorage(salesItem);
+    }
 }
 
 
@@ -416,5 +484,12 @@ if (!Auth.isLoggedIn()) {
     UI.showLoginForm();
 } else {
     UI.showUsernameAtTop(Store.getCurrentUser());
-    UI.showAddNewItemForm();
+    UI.showStore();
+    // UI.showAddNewItemForm();
 }
+
+// todo add submit event listeneres to buttons
+// todo cancel button should trigger this.reset();
+// todo how to make html elements easier in JS
+// todo encrypting password
+// todo implement routing and changing of screens whene something is done
