@@ -151,8 +151,8 @@ img.selected {
 }
 
 .button.button-small {
+    display: inline-block;
     width: auto;
-    display: inline;
 }
 
 .button.submit,
@@ -228,6 +228,7 @@ div.salesItem p {
 
 /* Styling the sales item details */
 div.salesItemDetails {
+    position: relative;
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 2fr auto auto auto;
@@ -257,4 +258,19 @@ div.salesItemDetails img {
     grid-area: picture;
     max-height: 50vh;
     justify-self: center;
+}
+
+div.salesItemDetails span.arrow {
+    position: absolute;
+    cursor: pointer;
+    top: 35%;
+    margin: 0 3rem;
+}
+
+div.salesItemDetails span#arrowleft {
+    left: 0;
+}
+
+div.salesItemDetails span#arrowRight {
+    right: 0;
 }

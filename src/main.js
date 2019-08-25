@@ -228,12 +228,67 @@ class UI {
             <h2> ${salesItem.title} </h2>
             <h3> ${salesItem.price} </h3>
             <p> ${salesItem.description} </p>
-            <img src=${salesItem.pictures[0]} >
+            ${salesItem.pictures.length > 1 ? `<span id="arrowLeft" class="arrow"><i class="fas fa-chevron-left"></i></span>` : '' }
+            <img src=${salesItem.pictures[0]} class="salesItemDetailPicture" id="0">
+            ${salesItem.pictures.length > 1 ? `<span id="arrowRight" class="arrow"><i class="fas fa-chevron-right"></i></span>` : '' }
         `;
 
         div.innerHTML = markup;
         container.innerHTML = '';
         container.appendChild(div);
+        this.picturesCaroussel(salesItem);
+    }
+
+    static picturesCaroussel(salesItem) {
+        const pictures = salesItem.pictures
+        const imageElement = document.querySelector('img.salesItemDetailPicture');
+
+        const leftArrow = document.querySelector('span#arrowLeft');
+        const rightArrow = document.querySelector('span#arrowRight');
+
+        function next() {
+            let id = imageElement.id;
+            if (id >= pictures.length - 1) {
+                id = -1;
+            }
+            id++;
+            imageElement.id = id;
+            imageElement.src = pictures[id];
+        }
+
+        function prev() {
+            let id = imageElement.id;
+            if (id <= 0) {
+                id = pictures.length;
+            }
+            id--;
+            imageElement.id = id;
+            imageElement.src = pictures[id];
+        }
+
+        // Adding events for arrows
+        leftArrow.addEventListener('click', () => {
+            prev()
+        });
+        rightArrow.addEventListener('click', () => {
+            next()
+        });
+
+        // Adding events for keys
+        document.onkeydown = (e) => {
+            switch (e.keyCode) {
+                // right key pressed
+                case 39:
+                    next();
+                    break;
+
+                case 37:
+                    prev();
+                    break;
+            }
+        }
+
+
     }
 
     // Shows the store with all the sales items
