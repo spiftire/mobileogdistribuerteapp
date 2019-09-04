@@ -1,5 +1,5 @@
 // Imports
-import UI from "./UI";
+import UI from "./UI.js";
 
 
 // Main program

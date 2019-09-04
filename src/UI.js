@@ -174,6 +174,11 @@ export default class UI {
         container.appendChild(div);
         this.picturesCaroussel(salesItem);
     }
+
+    /**
+     * Driving the picture caroussel
+     * @param {SalesItem} salesItem 
+     */
     static picturesCaroussel(salesItem) {
         const pictures = salesItem.pictures;
         const imageElement = document.querySelector('img.salesItemDetailPicture');
@@ -199,25 +204,27 @@ export default class UI {
             imageElement.id = id;
             imageElement.src = pictures[id];
         }
-        // Adding events for arrows
-        leftArrow.addEventListener('click', () => {
-            prev();
-        });
-        rightArrow.addEventListener('click', () => {
-            next();
-        });
-        // Adding events for keys
-        document.onkeydown = (e) => {
-            switch (e.keyCode) {
-                // right key pressed
-                case 39:
-                    next();
-                    break;
-                case 37:
-                    prev();
-                    break;
-            }
-        };
+        // Adding events for arrows if arrow pressent
+        if (leftArrow && rightArrow) {
+            leftArrow.addEventListener('click', () => {
+                prev();
+            });
+            rightArrow.addEventListener('click', () => {
+                next();
+            });
+            // Adding events for keys
+            document.onkeydown = (e) => {
+                switch (e.keyCode) {
+                    // right key pressed
+                    case 39:
+                        next();
+                        break;
+                    case 37:
+                        prev();
+                        break;
+                }
+            };
+        }
     }
     // Shows the store with all the sales items
     static showStore() {
