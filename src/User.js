@@ -1,4 +1,5 @@
 // User: Represent a user of the system
+export default
 class User {
     constructor(firstname, lastname, streetAddress, city, postalCode, email, username, password) {
         this.firstname = firstname;

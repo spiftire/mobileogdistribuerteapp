@@ -1,4 +1,9 @@
+// Imports
+import UsersRegistry from './UsersRegistry.js'
+import User from './User.js'
+
 // Auth class: Handeling authentication of users
+export default
 class Auth {
     // Logging in user
     static logIn() {

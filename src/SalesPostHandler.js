@@ -1,4 +1,5 @@
 // Handels all tasks related to making a new sales post
+export default
 class SalesPostHandler {
     // Deletes the previous used picture preview element if any
     static deletePreveousPreview() {

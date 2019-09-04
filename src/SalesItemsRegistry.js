@@ -1,4 +1,5 @@
 // Sales Item registry: Holds and handles all the sales Items
+export default
 class SalesItemsRegistry {
     static getAllSalesItems() {
         const salesItems = JSON.parse(localStorage.getItem('salesItems'));

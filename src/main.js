@@ -1,3 +1,10 @@
+// Imports
+import SalesPostHandler from "./SalesPostHandler.js";
+import Auth from "./Auth.js";
+import SalesItemsRegistry from './SalesItemsRegistry.js';
+import UsersRegistry from './UsersRegistry.js'
+
+
 // UI class: Handeling UI
 class UI {
 

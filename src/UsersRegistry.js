@@ -1,4 +1,5 @@
 // UsersRegistry: A class to hold all the reigstered users
+export default
 class UsersRegistry {
     // Gets the current logged in user
     static getCurrentUser() {
