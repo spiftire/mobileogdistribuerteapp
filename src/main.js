@@ -596,7 +596,4 @@ class SalesPostHandler {
 // Main program
 UI.start();
 
-// todo add submit event listeneres to buttons
-// todo cancel button should trigger this.reset();
-// todo how to make html elements easier in JS
 // todo encrypting password
