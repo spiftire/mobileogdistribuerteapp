@@ -4,10 +4,10 @@
         "es6": true
     },
     "extends": [
-        "airbnb-base",
-        "prettier"
+        "google",
+        "plugin:prettier/recommended"
     ],
-    "plugins": ["prettier"],
+    "plugins": ["prettier", "import"],
     "globals": {
         "Atomics": "readonly",
         "SharedArrayBuffer": "readonly"
@@ -17,7 +17,8 @@
         "sourceType": "module"
     },
     "rules": {
-        "prettier/prettier": "error",
-        "no-unused-vars": "warn"
+        "prettier/prettier": "off",
+        "no-unused-vars": "warn",
+        "indent": [2, 4]
     }
 }
