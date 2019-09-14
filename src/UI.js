@@ -1,9 +1,15 @@
-import SalesPostHandler from "./SalesPostHandler.js";
-import Auth from "./Auth.js";
+import SalesPostHandler from './SalesPostHandler.js';
+import Auth from './Auth.js';
 import SalesItemsRegistry from './SalesItemsRegistry.js';
 import UsersRegistry from './UsersRegistry.js';
-// UI class: Handeling UI
+
+/**
+ * Class to handle all UI related tasks
+ */
 export default class UI {
+    /**
+   * The enterypoint of the class
+   */
     static start() {
         UI.showStore();
         if (Auth.isLoggedIn()) {
@@ -14,14 +20,20 @@ export default class UI {
         // Event: Listen for home click.
         UI.addEventListnerToLogo();
     }
-    // Event for the logo up top
+
+    /**
+   * Adding event listener to the logo on the screen
+   */
     static addEventListnerToLogo() {
         const logo = document.querySelector('h1#logo');
         logo.addEventListener('click', () => {
             UI.showStore();
         });
-    };
-    // Show the login button if the user is not logged in
+    }
+
+    /**
+   * Show the login button
+   */
     static showLoginButton() {
         if (!Auth.isLoggedIn()) {
             const div = document.querySelector('div#buttonOrUser');
@@ -32,18 +44,24 @@ export default class UI {
             });
         }
     }
-    // Show username up top if user is logged in
+
+    /**
+   * Show username up top if user is logged in
+   */
     static showUsernameAtTop() {
         if (Auth.isLoggedIn()) {
-            const buttonOrUser = document.querySelector("#buttonOrUser");
+            const buttonOrUser = document.querySelector('#buttonOrUser');
             const user = UsersRegistry.getCurrentUser();
             buttonOrUser.innerHTML = `${user.username}`;
         }
     }
-    // Shows the login form
+
+    /**
+   * Shows the login form
+   */
     static showLoginForm() {
-        // Creating the login form
-        const container = document.querySelector(".container");
+    // Creating the login form
+        const container = document.querySelector('.container');
         container.innerHTML = `
         <h1>Login</h1>
         <div class="logininfo">
@@ -59,16 +77,21 @@ export default class UI {
         </div>
         <a href="#" id="createNewUser">Creat new user</a> <!-- todo link to creat user page-->
         `;
+
         // Events: Create new user click event
         const createNewUserLink = document.querySelector('#createNewUser');
         createNewUserLink.addEventListener('click', UI.showCreateNewUserForm);
+
         // Event: Login button click event
         const loginForm = document.querySelector('#loginForm');
         loginForm.addEventListener('submit', Auth.logIn);
-    };
-    // Shows the create new user form
+    }
+
+    /**
+   * Shows the create new user form
+   */
     static showCreateNewUserForm() {
-        const container = document.querySelector(".container");
+        const container = document.querySelector('.container');
         container.innerHTML = `
         <h1>Create User</h1>
         <form id="createNewUserForm">
@@ -107,10 +130,13 @@ export default class UI {
             UI.showStore();
         });
     }
-    // Shows all the sales items that are in the registry
+
+    /**
+   * Shows all the sales items that are in the registry
+   */
     static showAllSaleItems() {
         const salesItems = SalesItemsRegistry.getAllSalesItems();
-        const container = document.querySelector(".container");
+        const container = document.querySelector('.container');
         container.innerHTML = '';
         if (salesItems === null) {
             container.innerHTML = 'Nothing in register';
@@ -132,7 +158,10 @@ export default class UI {
             UI.addEventListenerToSalesItems();
         }
     }
-    // Adds event click event listeners to all the sales items
+
+    /**
+   * Adds event click event listeners to all the sales items
+   */
     static addEventListenerToSalesItems() {
         const salesItems = document.querySelectorAll('div.salesItem');
         for (let i = 0; i < salesItems.length; i++) {
@@ -141,7 +170,10 @@ export default class UI {
             });
         }
     }
-    // Adds new sales item button to the screen if the user is logged in
+
+    /**
+   * Adds new sales item button to the screen if the user is logged in
+   */
     static showAddNewSalesItemButton() {
         if (Auth.isLoggedIn()) {
             // Making and creating the button
@@ -149,26 +181,34 @@ export default class UI {
             addNewSalesItemButton.classList.add('addNewSalesItem', 'button');
             addNewSalesItemButton.innerText = '+';
             // Adding the button to the DOM
-            const container = document.querySelector(".container");
+            const container = document.querySelector('.container');
             container.appendChild(addNewSalesItemButton);
             // Adding click eventlistner
             addNewSalesItemButton.addEventListener('click', UI.showAddNewItemForm);
         }
     }
-    // Shows the sales item details
+
+    /**
+   * Shows the sales item details
+   * @param {*} salesItemID The ID of the sales item to show the details of
+   */
     static showSalesItemDetails(salesItemID) {
-        const container = document.querySelector(".container");
+        const container = document.querySelector('.container');
         const salesItem = SalesItemsRegistry.getItemByID(salesItemID);
         const div = document.createElement('div');
         div.classList.add('salesItemDetails');
-        const markup = `
-            <h2> ${salesItem.title} </h2>
-            <h3> ${salesItem.price} </h3>
-            <p> ${salesItem.description} </p>
-            ${salesItem.pictures.length > 1 ? `<span id="arrowLeft" class="arrow"><i class="fas fa-chevron-left"></i></span>` : ''}
-            <img src=${salesItem.pictures[0]} class="salesItemDetailPicture" id="0">
-            ${salesItem.pictures.length > 1 ? `<span id="arrowRight" class="arrow"><i class="fas fa-chevron-right"></i></span>` : ''}
-        `;
+        const markup = html `
+      <h2>${salesItem.title}</h2>
+      <h3>${salesItem.price}</h3>
+      <p>${salesItem.description}</p>
+      ${salesItem.pictures.length > 1
+        ? `<span id="arrowLeft" class="arrow"><i class="fas fa-chevron-left"></i></span>`
+        : ''}
+      <img src=${salesItem.pictures[0]} class="salesItemDetailPicture" id="0" />
+      ${salesItem.pictures.length > 1
+        ? `<span id="arrowRight" class="arrow"><i class="fas fa-chevron-right"></i></span>`
+        : ''}
+    `;
         div.innerHTML = markup;
         container.innerHTML = '';
         container.appendChild(div);
@@ -176,15 +216,18 @@ export default class UI {
     }
 
     /**
-     * Driving the picture caroussel
-     * @param {SalesItem} salesItem 
-     */
+   * Driving the picture caroussel
+   * @param {SalesItem} salesItem The sales item to show the picture caroussel on
+   */
     static picturesCaroussel(salesItem) {
         const pictures = salesItem.pictures;
         const imageElement = document.querySelector('img.salesItemDetailPicture');
         const leftArrow = document.querySelector('span#arrowLeft');
         const rightArrow = document.querySelector('span#arrowRight');
 
+        /**
+     * Show the next image in the caroussel
+     */
         function next() {
             let id = imageElement.id;
             if (id >= pictures.length - 1) {
@@ -195,6 +238,9 @@ export default class UI {
             imageElement.src = pictures[id];
         }
 
+        /**
+     * Show the prevous image in the caroussel
+     */
         function prev() {
             let id = imageElement.id;
             if (id <= 0) {
@@ -215,48 +261,58 @@ export default class UI {
             // Adding events for keys
             document.onkeydown = (e) => {
                 switch (e.keyCode) {
-                    // right key pressed
-                    case 39:
-                        next();
-                        break;
-                    case 37:
-                        prev();
-                        break;
+                // right key pressed
+                case 39:
+                    next();
+                    break;
+                case 37:
+                    prev();
+                    break;
                 }
             };
         }
     }
-    // Shows the store with all the sales items
+
+    /**
+   * Shows the store with all the sales items
+   */
     static showStore() {
         UI.showAllSaleItems();
         UI.showAddNewSalesItemButton();
     }
-    // Shows the add new item form
+
+    /**
+   * Shows the add new item form
+   */
     static showAddNewItemForm() {
         if (Auth.isLoggedIn) {
-            const container = document.querySelector(".container");
-            container.innerHTML = `
-            <form class="salesItemForm">
-            <label for="title">Title</label>
-            <input type="text" id="title" required>
-            <label for="price">Price</label>
-            <input type="num" id="price" required>
-            <label for="description">Description</label>
-            <textarea id="description"></textarea>
-            <label for="picture" class="button">Add images</label>
-            <input type="file" id="picture" accept="image/*" multiple>
-            <div class="buttonHolder">
-            <input class="button submit" type="submit" value="Submit sales item">
-            <input class="button cancel" type="reset" value="Cancel">
-            </div>
-            </form>
-            `;
-            //Event: Trigger when picture input field is changed
+            const container = document.querySelector('.container');
+            container.innerHTML = html `
+        <form class="salesItemForm">
+          <label for="title">Title</label>
+          <input type="text" id="title" required />
+          <label for="price">Price</label>
+          <input type="num" id="price" required />
+          <label for="description">Description</label>
+          <textarea id="description"></textarea>
+          <label for="picture" class="button">Add images</label>
+          <input type="file" id="picture" accept="image/*" multiple />
+          <div class="buttonHolder">
+            <input
+              class="button submit"
+              type="submit"
+              value="Submit sales item"
+            />
+            <input class="button cancel" type="reset" value="Cancel" />
+          </div>
+        </form>
+      `;
+            // Event: Trigger when picture input field is changed
             const pictureInput = document.querySelector('input#picture');
             pictureInput.addEventListener('change', function (e) {
                 SalesPostHandler.showPreviewPicture(e);
             });
-            //Event: Cancel button should reset form and send user to home screen
+            // Event: Cancel button should reset form and send user to home screen
             const cancelButton = document.querySelector('input[type="reset"');
             cancelButton.addEventListener('click', () => {
                 UI.showStore();

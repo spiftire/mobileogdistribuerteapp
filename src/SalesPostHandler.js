@@ -1,15 +1,22 @@
-// Handels all tasks related to making a new sales post
-export default
-class SalesPostHandler {
-    // Deletes the previous used picture preview element if any
+/**
+ * Handels all tasks related to making a new sales post
+ */
+export default class SalesPostHandler {
+    /**
+     * Deletes the previous used picture preview element if any
+     */
     static deletePreveousPreview() {
         const imagesHolder = document.querySelector('.imagesHolder');
         if (imagesHolder) {
             imagesHolder.parentElement.removeChild(imagesHolder);
         }
     }
-    // Show the preview pictures in the ui
-    // todo should this be moved to UI class?
+
+    /**
+     * todo should this be moved to UI class?
+     * Show the preview pictures in the ui
+     * @param {*} event 
+     */
     static showPreviewPicture(event) {
         SalesPostHandler.deletePreveousPreview();
         const files = event.target.files;
@@ -31,18 +38,22 @@ class SalesPostHandler {
             reader.onload = () => {
                 const img = document.createElement('img');
                 img.classList.add('previewPicture');
-                //Setting unique id for picture
+                // Setting unique id for picture
                 img.id = i;
-                //Setting  the src of the image
+                // Setting  the src of the image
                 img.src = reader.result;
-                //placing the image in the imageholder
+                // placing the image in the imageholder
                 imagesHolder.appendChild(img);
                 SalesPostHandler.addClickEventToImage(img);
             };
             reader.readAsDataURL(files[i]);
         }
     }
-    // Delete button
+
+    /**
+     * Delete button
+     * @return {HTMLElement} retrurns a delete button element
+     */
     static createDeleteButton() {
         const deleteImagesButton = document.createElement('button');
         deleteImagesButton.innerHTML = 'Delete images';
@@ -57,20 +68,30 @@ class SalesPostHandler {
         });
         return deleteImagesButton;
     }
-    // Checks if there is a need for a imageHolder. REmoves it of there are no images
+
+    /**
+     * Checks if there is a need for a imageHolder. REmoves it of there are no images
+     */
     static imagesHolderNeeded() {
         if (document.querySelectorAll('img.previewPicture').length == 0) {
             document.querySelector('div.imagesHolder').remove();
         }
     }
-    // Click event for preview pictures
+
+    /**
+     * Click event for preview pictures
+     * @param {*} img The image to be clickable
+     */
     static addClickEventToImage(img) {
         img.addEventListener('click', () => {
             img.classList.toggle('selected');
             SalesPostHandler.toggleDeleteImageButton();
         });
     }
-    // Toggle the disabled attribute on the delete images button. Enabled if images is selected, disabled if no images selected
+
+    /**
+     * Toggle the disabled attribute on the delete images button. Enabled if images is selected, disabled if no images selected
+     */
     static toggleDeleteImageButton() {
         const selected = document.querySelectorAll('img.selected');
         const deleteButton = document.querySelector('button#deleteImages');
@@ -81,7 +102,10 @@ class SalesPostHandler {
             deleteButton.toggleAttribute('disabled');
         }
     }
-    // Delete all the selected images from the DOM
+
+    /**
+     * Delete all the selected images from the DOM
+     */
     static deleteImages() {
         const images = document.querySelectorAll('img.selected');
         for (let i = 0; i < images.length; i++) {
@@ -89,7 +113,11 @@ class SalesPostHandler {
             image.remove();
         }
     }
-    // Validate form
+
+    /**
+     * Validate form
+     * @param {HTMLForm} form the frorm to validate
+     */
     static validateSalesItemForm(form) {
         const title = form.querySelector('#title').value;
         const price = form.querySelector('#price').value;

@@ -1,6 +1,5 @@
 // Imports
-import UI from "./UI.js";
-
+import UI from './UI.js';
 
 // Main program
 UI.start();
